@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+
+<head>
+    <style>
+        .thumbnail {
+            margin: 10px;
+            width: 150px;
+            height: 150px;
+            background-size: cover;
+        }
+
+        .thumbnail.circle {
+            border-radius: 100%
+        }
+
+        div {
+            max-width: 50%;
+            margin: auto;
+            padding: 5px;
+
+            text-align: center;
+            border-radius: 5px;
+            background-color: #f2f2f2;
+        }
+
+        input {
+            max-width: 50%;
+            padding: 8px 15px;
+            margin: 8px 0;
+            border-radius: 4px;
+        }
+
+        textarea {
+            max-width: 50%;
+            height: 50px;
+            padding: 5px 10px;
+            margin: 8px 0;
+            border-radius: 4px;
+        }
+
+        span{
+            margin: 15px;
+        }
+    </style>
+</head>
+
+<body bgcolor="">
+
+    <div class="thumbnail circle" style="background-image:url('image/tulip.jpg')"> </div>
+    <h1> Interests </h1>
+    <ul>
+        <li> Distributed systems </li>
+        <li> Server / Platform </li>
+        <li> Cloud System </li>
+    </ul>
+<center>
+    <h1> Comment to Jeesoo</h1>
+    <div>
+        <form action="javascript:alert('Send an email');">
+            Name: <input type="text" name="name" id="nameInput" > <span id="nameSpan"></span>
+            <br> 
+            Email: <input type="text" name="email" id="emailInput" > <span id="emailSpan"></span>
+            <br>
+            Subject: <input type="text" name="subject" id="subInput"><span id="subSpan"></span>
+            <br> 
+            Message: <br>
+            <textarea rows="7" cols="50">  </textarea>
+            <br>
+            <input type="submit" value="Send" id="msgInput"><span></span>
+        </form>
+    </div>
+</center>
+
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+        $("input").change(function() {
+           $(this).next("span").html(''); 
+        });
+
+        $("form").submit( function() {
+            var ret = true;
+
+            if( $("#nameInput").val() == "") {
+                $("#nameSpan").text("Write your name").show();
+                ret = false;
+            } 
+            else {
+                $("#nameSpan").text("").show();
+                ret = true;
+            }     
+
+            if( $("#emailInput").val() == "") {
+                $("#emailSpan").text("Write your email").show();
+                ret = false;
+            }    
+            else {
+                $("#emailSpan").text("").show();
+                if(ret == false) 
+                    ret = false;
+                else
+                    ret = true;
+            }        
+            
+            if(ret == true) {
+                if( $("#subInput").val() == "") {
+                    //제목없음
+                }
+                if( $("textarea").val() == "") {
+                    //내용없음
+                }
+                
+                $("input:text").val("");
+                $("textarea").val("");
+                $("span").text("").show();
+            }         
+            return ret;
+
+        }); 
+    </script>
+
+</body>
+
+</html>

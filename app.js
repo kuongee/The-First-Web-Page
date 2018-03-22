@@ -23,10 +23,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
+app.use('/index', index);
 app.use('/users', users);
 app.use('/member', member);
 
+/*
+//Get Post 연습
 app.get('/link', function (req, res) {
   res.send('Hello World! Get ')
 });
@@ -34,6 +36,7 @@ app.get('/link', function (req, res) {
 app.post('/link', function (req, res) {
   res.send('Hello World! Post')
 });
+*/
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -52,5 +55,38 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+/*
+'use strict';
+var nodemailer = require('nodemailer');
+
+// create reusable transporter object using the default SMTP transport
+var transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com', //smtp.daum.net
+    port: 465,  // 465
+    secure: true, // true for 465, false for other ports
+    auth: {
+        user: 'kuongee@gmail.com',  // kuongee
+        pass: 'min16032102'                    // daum 메일 접속 시 비밀번호
+    }
+});
+
+// setup email data with unicode symbols
+let mailOptions = {
+    from: '"kuongee" <kuongee@naver.com>', // sender address
+    to: 'kuongee@gmail.com', // list of receivers
+    subject: 'Node-emailer 연습입니다!', // Subject line
+    text: '안녕하세요! 민지수입니다. Node-emailer 연습 메일입니다! 감사합니다. 민지수 드림', // plain text body
+    //html: '<b>Hello world?</b>' // html body
+};
+
+// send mail with defined transport object
+transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+        return console.log(error);
+    }
+    console.log('Message sent: %s', info.messageId);
+});
+*/
 
 module.exports = app;
