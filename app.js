@@ -5,9 +5,23 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+var multer = require('multer');
+var _storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname)
+    }
+})
+var upload = multer({ storage: _storage })
+
 var index = require('./routes/index');
 var users = require('./routes/users');
 var member = require('./routes/member');
+
+var connection = require('./config/db');
+connection.connect();
 
 var app = express();
 
@@ -22,39 +36,114 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(__dirname + '/uploads'));
 
 app.use('/index', index);
 app.use('/users', users);
 app.use('/member', member);
 
-/*
-//Get Post 연습
-app.get('/link', function (req, res) {
-  res.send('Hello World! Get ')
+app.post('/upload', upload.single('userfile'), function (req, res) {
+    connection.query(`insert into image (id, path)
+    values (null, ?)`, [req.file.filename],
+        function (error, results, fields) {
+            if (error) throw error;
+        });
+
+    connection.query('SELECT path from image', function (error, results, fields) {
+        if (error) throw error;
+
+
+        var htmlStart = `
+        <!doctype html>
+        <html>
+        <head>
+        <style>
+            .thumbnail{
+                margin: 10px;
+                width: 150px;
+                height: 150px;
+                background-size: cover;
+            }
+            .thumbnail.circle {
+                border-radius: 100%
+            }
+        </style>
+        </head>
+
+        <body>`;
+
+        var divText = `<div class="thumbnail circle" style="background-image:url('uploads/`;
+        var divEnd = `')"> </div>`;
+        results.forEach(element => {
+            htmlStart += divText + element.path + divEnd;
+        });
+
+        var htmlEnd = `</body>    </html>`;
+        res.send(htmlStart + htmlEnd);
+    });
+
 });
 
-app.post('/link', function (req, res) {
-  res.send('Hello World! Post')
+app.post('/text', function (req, res) {
+    var text = req.body.text;
+    res.send(text);
 });
-*/
+
+app.get('/show', function (req, res) {
+    connection.query('SELECT path from image', function (error, results, fields) {
+        if (error) throw error;
+
+
+        var htmlStart = `
+        <!doctype html>
+        <html>
+        <head>
+        <style>
+            .thumbnail{
+                margin: 10px;
+                width: 150px;
+                height: 150px;
+                background-size: cover;
+            }
+            .thumbnail.circle {
+                border-radius: 100%
+            }
+        </style>
+        </head>
+
+        <body>`;
+
+        var divText = `<div class="thumbnail circle" style="background-image:url('uploads/`;
+        var divEnd = `')"> </div>`;
+        results.forEach(element => {
+            htmlStart += divText + element.path + divEnd;
+        });
+
+        var htmlEnd = `</body>    </html>`;
+        res.send(htmlStart + htmlEnd);
+    });
+});
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+app.use(function (req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use(function (err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
+
+
+//connection.end();
 
 /*
 'use strict';

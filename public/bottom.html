@@ -27,7 +27,6 @@
         input {
             max-width: 50%;
             padding: 8px 15px;
-            margin: 8px 0;
             border-radius: 4px;
         }
 
@@ -39,7 +38,7 @@
             border-radius: 4px;
         }
 
-        span{
+        span {
             margin: 15px;
         }
     </style>
@@ -54,70 +53,26 @@
         <li> Server / Platform </li>
         <li> Cloud System </li>
     </ul>
-<center>
-    <h1> Comment to Jeesoo</h1>
-    <div>
-        <form action="javascript:alert('Send an email');">
-            Name: <input type="text" name="name" id="nameInput" > <span id="nameSpan"></span>
-            <br> 
-            Email: <input type="text" name="email" id="emailInput" > <span id="emailSpan"></span>
-            <br>
-            Subject: <input type="text" name="subject" id="subInput"><span id="subSpan"></span>
-            <br> 
-            Message: <br>
-            <textarea rows="7" cols="50">  </textarea>
-            <br>
-            <input type="submit" value="Send" id="msgInput"><span></span>
-        </form>
-    </div>
-</center>
 
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-    <script>
-        $("input").change(function() {
-           $(this).next("span").html(''); 
-        });
+        <h2>Upload Images</h2>
+    <form action="/upload" method='post' enctype="multipart/form-data">
+        <input type="file" name='userfile'></input>
+        <input type="submit" value="Upload">
+    </form>
+    <form action="/show" method='get'>
+        <input type="submit" value="show images">
+    </form>
 
-        $("form").submit( function() {
-            var ret = true;
 
-            if( $("#nameInput").val() == "") {
-                $("#nameSpan").text("Write your name").show();
-                ret = false;
-            } 
-            else {
-                $("#nameSpan").text("").show();
-                ret = true;
-            }     
+    <h2>Comment</h2>
+    <form action="/text" method='post'>
+        <textarea name="text" rows="20" cols="60"></textarea>
+        <p>
+            <input type="submit" value="Submit" />
+        </p>
+    </form>
 
-            if( $("#emailInput").val() == "") {
-                $("#emailSpan").text("Write your email").show();
-                ret = false;
-            }    
-            else {
-                $("#emailSpan").text("").show();
-                if(ret == false) 
-                    ret = false;
-                else
-                    ret = true;
-            }        
-            
-            if(ret == true) {
-                if( $("#subInput").val() == "") {
-                    //제목없음
-                }
-                if( $("textarea").val() == "") {
-                    //내용없음
-                }
-                
-                $("input:text").val("");
-                $("textarea").val("");
-                $("span").text("").show();
-            }         
-            return ret;
 
-        }); 
-    </script>
 
 </body>
 
