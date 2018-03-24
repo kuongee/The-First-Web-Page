@@ -1,0 +1,39 @@
+.thumbnail {
+    margin: 10px;
+    width: 150px;
+    height: 150px;
+    background-size: cover;
+}
+
+.thumbnail.circle {
+    border-radius: 100%
+}
+
+img {
+    max-width: 30%;
+    max-height: 20%;
+}
+
+div {
+    padding: 5px;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+input {
+    max-width: 50%;
+    padding: 8px 15px;
+    border-radius: 4px;
+}
+
+textarea {
+    max-width: 50%;
+    height: 50px;
+    padding: 5px 10px;
+    margin: 8px 0;
+    border-radius: 4px;
+}
+
+span {
+    margin: 15px;
+}

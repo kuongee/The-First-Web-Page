@@ -38,11 +38,89 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(__dirname + '/uploads'));
 
-app.use('/index', index);
-app.use('/users', users);
-app.use('/member', member);
+//app.use('/member', member);
 
-app.post('/upload', upload.single('userfile'), function (req, res) {
+function showImages(results) {
+    var htmlStart = `
+    <!doctype html>
+    <html>
+    <head>
+    <style>
+        .thumbnail{
+            margin: 10px;
+            width: 150px;
+            height: 150px;
+            background-size: cover;
+        }
+        .thumbnail.circle {
+            border-radius: 100%
+        }
+    </style>
+    </head>
+
+    <body>`;
+
+    var divText = `<div class="thumbnail circle" style="background-image:url('uploads/`;
+    var divEnd = `')"> </div>`;
+    results.forEach(element => {
+        htmlStart += divText + element.path + divEnd;
+    });
+
+    var htmlEnd = `</body>    </html>`;
+
+    return htmlStart + htmlEnd;
+}
+app.get('/', defaultPage);
+function defaultPage(req, res) {
+    res.sendFile(__dirname + '/public/index.html');
+}
+
+app.post('/upload.json', function(req, res) {
+    var message = {};
+    var path = req.body.path.split("\\");
+    var name = path[path.length-1];
+    //console.log("Image name ", name);
+    message.path = name;
+    save(message, "image", res); 
+});
+
+app.get('/show.json', function(req, res) {
+    var id = req.query.id;
+    //console.log("id is " , id);
+    show(id, "image", res);
+})
+
+function save(data, table, res) {
+    var sql = `INSERT INTO ` + table + ` SET ?`;
+    var query = connection.query(sql, data, function (err, result) {
+        var resultObj = {};
+        if(err) {
+            resultObj.success = false;
+        } else {
+            resultObj.success = true;
+            resultObj.id = result.insertId;
+        }
+        res.send(JSON.stringify(resultObj));
+    });
+}
+
+function show(id, table, res) {
+    var sql = 'SELECT * from ' + table + ' where id = ';
+    var query = connection.query(sql + connection.escape(id), function (err, result){
+        var resultObj = {};
+        if(err) {
+            resultObj.success = false;
+        }
+        else {
+            res.json(result);
+            console.log(result);
+            return;
+        }
+        res.send(JSON.stringify(resultObj));
+    });
+}
+
+/*app.post('/upload', upload.single('userfile'), function (req, res) {
     connection.query(`insert into image (id, path)
     values (null, ?)`, [req.file.filename],
         function (error, results, fields) {
@@ -51,38 +129,12 @@ app.post('/upload', upload.single('userfile'), function (req, res) {
 
     connection.query('SELECT path from image', function (error, results, fields) {
         if (error) throw error;
-
-
-        var htmlStart = `
-        <!doctype html>
-        <html>
-        <head>
-        <style>
-            .thumbnail{
-                margin: 10px;
-                width: 150px;
-                height: 150px;
-                background-size: cover;
-            }
-            .thumbnail.circle {
-                border-radius: 100%
-            }
-        </style>
-        </head>
-
-        <body>`;
-
-        var divText = `<div class="thumbnail circle" style="background-image:url('uploads/`;
-        var divEnd = `')"> </div>`;
-        results.forEach(element => {
-            htmlStart += divText + element.path + divEnd;
-        });
-
-        var htmlEnd = `</body>    </html>`;
-        res.send(htmlStart + htmlEnd);
+        var html = showImages(results)        
+        res.send(html);
     });
 
 });
+*/
 
 app.post('/text', function (req, res) {
     var text = req.body.text;
@@ -92,35 +144,8 @@ app.post('/text', function (req, res) {
 app.get('/show', function (req, res) {
     connection.query('SELECT path from image', function (error, results, fields) {
         if (error) throw error;
-
-
-        var htmlStart = `
-        <!doctype html>
-        <html>
-        <head>
-        <style>
-            .thumbnail{
-                margin: 10px;
-                width: 150px;
-                height: 150px;
-                background-size: cover;
-            }
-            .thumbnail.circle {
-                border-radius: 100%
-            }
-        </style>
-        </head>
-
-        <body>`;
-
-        var divText = `<div class="thumbnail circle" style="background-image:url('uploads/`;
-        var divEnd = `')"> </div>`;
-        results.forEach(element => {
-            htmlStart += divText + element.path + divEnd;
-        });
-
-        var htmlEnd = `</body>    </html>`;
-        res.send(htmlStart + htmlEnd);
+        var html = showImages(results)        
+        res.send(html);
     });
 });
 

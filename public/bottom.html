@@ -2,46 +2,13 @@
 <html>
 
 <head>
-    <style>
-        .thumbnail {
-            margin: 10px;
-            width: 150px;
-            height: 150px;
-            background-size: cover;
-        }
-
-        .thumbnail.circle {
-            border-radius: 100%
-        }
-
-        div {
-            max-width: 50%;
-            margin: auto;
-            padding: 5px;
-
-            text-align: center;
-            border-radius: 5px;
-            background-color: #f2f2f2;
-        }
-
-        input {
-            max-width: 50%;
-            padding: 8px 15px;
-            border-radius: 4px;
-        }
-
-        textarea {
-            max-width: 50%;
-            height: 50px;
-            padding: 5px 10px;
-            margin: 8px 0;
-            border-radius: 4px;
-        }
-
-        span {
-            margin: 15px;
-        }
-    </style>
+    <title> Jeesoo Web </title>
+    <link rel="stylesheet" href="/bottom.css">        
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+    <script src="/jquery-1.11.1.min.js"></script>
+    <script src="/jquery.paging.min.js"></script>
+    <script src="/bottom.js"></script>
+    <meta charset="utf-8">
 </head>
 
 <body bgcolor="">
@@ -54,15 +21,16 @@
         <li> Cloud System </li>
     </ul>
 
-        <h2>Upload Images</h2>
-    <form action="/upload" method='post' enctype="multipart/form-data">
-        <input type="file" name='userfile'></input>
-        <input type="submit" value="Upload">
-    </form>
-    <form action="/show" method='get'>
-        <input type="submit" value="show images">
+    <h2>Upload Images</h2>
+    <form id="imgform" enctype="multipart/form-data" onsubmit="return false;">
+        <input type="file" id="userfile" name="userfile" required></input>
+        <button id="upload">Upload</button>
     </form>
 
+   <div id="imgPanel" style="display: none;">
+        <img id="img">
+    </div>
+ <!--   <div class="thumbnail circle" id="thumbDiv"></div> -->
 
     <h2>Comment</h2>
     <form action="/text" method='post'>
