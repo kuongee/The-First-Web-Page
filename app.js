@@ -88,7 +88,12 @@ app.get('/show.json', function(req, res) {
     var id = req.query.id;
     //console.log("id is " , id);
     show(id, "image", res);
-})
+});
+
+app.get('/list.json', function(req, res) {
+    var pageNo = req.query.pageNo;
+    list(pageNo, res);
+});
 
 function save(data, table, res) {
     var sql = `INSERT INTO ` + table + ` SET ?`;
@@ -113,10 +118,31 @@ function show(id, table, res) {
         }
         else {
             res.json(result);
-            console.log(result);
             return;
         }
         res.send(JSON.stringify(resultObj));
+    });
+}
+
+function list(pageNo, res) {
+    console.log(pageNo);
+    var num = parseInt(pageNo) - 1;
+    if(num < 0) {
+        num = 0;
+    }
+    var query = connection.query('select * from image order by id desc limit ?, ?', [num * 3, 3], function(err, results) {
+        var resultObj = {};
+        if(err){
+            resultObj.success = false;
+            console.log(err);
+        }
+        else {
+            resultObj.success = true;
+            resultObj.list = results;
+            res.json(resultObj);
+            return;
+        }
+        res.send(resultObj);
     });
 }
 

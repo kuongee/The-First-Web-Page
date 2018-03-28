@@ -3,7 +3,7 @@
 
 <head>
     <title> Jeesoo Web </title>
-    <link rel="stylesheet" href="/bottom.css">        
+    <link rel="stylesheet" href="/bottom.css">
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
     <script src="/jquery-1.11.1.min.js"></script>
     <script src="/jquery.paging.min.js"></script>
@@ -22,15 +22,22 @@
     </ul>
 
     <h2>Upload Images</h2>
-    <form id="imgform" enctype="multipart/form-data" onsubmit="return false;">
+    <form id="imgform" enctype="multipart/form-data" onsubmit="return false;" accept="image/*">
         <input type="file" id="userfile" name="userfile" required></input>
         <button id="upload">Upload</button>
     </form>
 
-   <div id="imgPanel" style="display: none;">
+    <div id="imgPanel" style="display: none;">
         <img id="img">
     </div>
- <!--   <div class="thumbnail circle" id="thumbDiv"></div> -->
+
+    <form onsubmit="return false;">
+        <button id="showList">List</button>
+    </form>
+    <div id="imgList" style="display:none;">
+        <dl id="dlList"> </dl>
+        <div id="paging"> </div>
+    </div>
 
     <h2>Comment</h2>
     <form action="/text" method='post'>
@@ -39,7 +46,6 @@
             <input type="submit" value="Submit" />
         </p>
     </form>
-
 
 
 </body>
