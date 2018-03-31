@@ -36,8 +36,29 @@ function list(pageNo) {
             var dir = "uploads/" + msg.path;
             // var divSen = "<div class=\"thumbnail circle\" style=\"background-image:url(\'" + dir + "\') </div>";
             var divSen = "<div class=\"thumbnail circle\" style=\"background-image:url('" + dir + "')\"> </div>";
-            $('#dlList').append(('<dt>' + msg.id + divSen + ' </dt>'));
+            $('#dlList').append(('<dt class="dtdt">' + msg.id + divSen + ' </dt> <dd> </dd>'));
+        });
 
+        var deleteid = -1;
+        $(".dtdt").on('click', function() {
+            if(deleteid == -1) {
+                deleteid = $(this).text();
+            }
+            if(deleteid != $(this).text()) {
+                deleteid = $(this).text();
+                $("dd").each(function() {
+                    $(this).text("");
+                });
+            }
+
+            if($(this).next().text().includes("Delete")) {
+                $(this).next().text("");
+            }
+            else {
+                $(this).next().text("Delete " + deleteid);
+            }
+            //alert("Delete " + id);
+            //deleteItem(pageNo);
         });
 
         $("#paging").paging(res.count, {
@@ -59,9 +80,9 @@ function list(pageNo) {
                             return '<a href="#' + this.value + '">' + this.value + '</a>';
                         return '<span class="current">' + this.value + '</span>';
                     case 'next': // >
-                        return '<a>&gt;</a>';
+                        return '<a> &gt; </a>';
                     case 'prev': // <
-                        return '<a>&lt;</a>';
+                        return '<a> &lt; </a>';
                     case 'first': // [
                         return '<a>first</a>';
                     case 'last': // ]
@@ -89,4 +110,8 @@ function showImage(id) {
         $('#imgPanel').fadeOut(3000);
         list(1);
     });
+}
+
+function deleteItem(id) {
+
 }

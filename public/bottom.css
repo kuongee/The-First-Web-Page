@@ -37,3 +37,8 @@ textarea {
 span {
     margin: 15px;
 }
+
+#dlList,
+.dtdt{
+    width: 130px;
+}
