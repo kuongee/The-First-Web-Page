@@ -34,15 +34,41 @@ function list(pageNo) {
         $("#dlList").html('');
         $.each(res.list, function (idx, msg) {
             var dir = "uploads/" + msg.path;
-           // var divSen = "<div class=\"thumbnail circle\" style=\"background-image:url(\'" + dir + "\') </div>";
-            var divSen = "<div class=\"thumbnail circle\" style=\"background-image:url('"+ dir +"')\"> </div>";
-            $('#dlList').append(('<dt>'+ msg.id + divSen + ' </dt>'));
+            // var divSen = "<div class=\"thumbnail circle\" style=\"background-image:url(\'" + dir + "\') </div>";
+            var divSen = "<div class=\"thumbnail circle\" style=\"background-image:url('" + dir + "')\"> </div>";
+            $('#dlList').append(('<dt>' + msg.id + divSen + ' </dt>'));
 
         });
 
-        //$("#paging").paging(res.count, {
-
-       // });
+        $("#paging").paging(res.count, {
+            format: '[ < ncn > ]',
+            perpage: res.perpage,
+            page: pageNo,
+            onSelect: function (page) {
+                if (page != pageNo) {
+                    list(page);
+                }
+                return event.preventDefault();
+            },
+            onFormat: function (type) {
+                switch (type) {
+                    case 'block': // n and c
+                        if (!this.active)
+                            return '<span>' + this.value + '</span>';
+                        else if (this.value != this.page)
+                            return '<a href="#' + this.value + '">' + this.value + '</a>';
+                        return '<span class="current">' + this.value + '</span>';
+                    case 'next': // >
+                        return '<a>&gt;</a>';
+                    case 'prev': // <
+                        return '<a>&lt;</a>';
+                    case 'first': // [
+                        return '<a>first</a>';
+                    case 'last': // ]
+                        return '<a>last</a>';
+                }
+            }
+        });
     });
 }
 

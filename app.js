@@ -139,12 +139,30 @@ function list(pageNo, res) {
         else {
             resultObj.success = true;
             resultObj.list = results;
-            res.json(resultObj);
+            //res.json(resultObj);
+            count(res, resultObj);
             return;
         }
         res.send(resultObj);
     });
 }
+
+function count(res, list) {
+    var query = connection.query('select count(*) as count from image'
+                                 , function (err, results) {
+        var resultObj = list;
+        if (err) {
+            resultObj.success = false;
+            console.log(err);
+        } else {
+            resultObj.count = results[0].count;
+            resultObj.perpage = 3;
+            res.json(resultObj);
+            return;
+        }
+        res.send(resultObj);
+    });
+  }
 
 /*app.post('/upload', upload.single('userfile'), function (req, res) {
     connection.query(`insert into image (id, path)
