@@ -44,23 +44,21 @@ function list(pageNo) {
             if(deleteid == -1) {
                 deleteid = $(this).text();
             }
+
             if(deleteid != $(this).text()) {
                 deleteid = $(this).text();
-                $("dd").each(function() {
-                    $(this).text("");
-                });
             }
 
-            if($(this).next().text().includes("Delete")) {
-                $(this).next().text("");
+            //$(this).next().text("Delete " + deleteid + "?");
+            var ret = confirm("Will you delete " + deleteid + "?");
+            if(ret == true) {
+                deleteItem(deleteid, pageNo);
             }
-            else {
-                $(this).next().text("Delete " + deleteid);
-            }
-            //alert("Delete " + id);
-            //deleteItem(pageNo);
+
         });
 
+        // pagination
+        // http://www.xarg.org/2011/09/jquery-pagination-revised/
         $("#paging").paging(res.count, {
             format: '[ < ncn > ]',
             perpage: res.perpage,
@@ -112,6 +110,16 @@ function showImage(id) {
     });
 }
 
-function deleteItem(id) {
-
+function deleteItem(id, pageNo) {
+    $.ajax({
+        url: '/delete.json',
+        dataType: 'json',
+        cache: false,
+        data: {
+            id: id
+        }
+    }).done(function (res) {
+        alert("Success to delete");
+        list(1);
+    });
 }

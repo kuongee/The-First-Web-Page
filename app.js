@@ -90,6 +90,12 @@ app.get('/show.json', function(req, res) {
     show(id, "image", res);
 });
 
+app.get('/delete.json', function(req, res) {
+    var id = req.query.id;
+   // console.log("id is " , id);
+    deleteItem(id, "image", res);
+});
+
 app.get('/list.json', function(req, res) {
     var pageNo = req.query.pageNo;
     list(pageNo, res);
@@ -121,6 +127,21 @@ function show(id, table, res) {
             return;
         }
         res.send(JSON.stringify(resultObj));
+    });
+}
+
+function deleteItem(id, table, res) {
+    var sql = 'delete from ' + table + ' where id=';
+    var query = connection.query(sql + connection.escape(id), function (err, result) {
+        var resultObj = {};
+        if(err) {
+            resultObj.success = false;
+        }
+        else {
+            resultObj.success = true;
+            return;
+        }
+        res.send(JSON.stringify(resultObj));        
     });
 }
 
