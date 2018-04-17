@@ -1,6 +1,6 @@
-const { postgres } = require('pg');
+const { Client } = require('pg');
 
-var connection = new postgres({
+var connection = new Client({
     connectionString: process.env.DATABASE_URL,
     ssl: true,
 });
