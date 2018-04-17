@@ -20,8 +20,8 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var member = require('./routes/member');
 
-var connection = require('./config/db');
-connection.connect();
+/*var connection = require('./config/db');
+connection.connect();*/
 
 var app = express();
 
