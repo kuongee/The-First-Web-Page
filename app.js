@@ -22,6 +22,8 @@ var member = require('./routes/member');
 
 /*var connection = require('./config/db');
 connection.connect();*/
+var connection = require('./config/pgdb');
+connection.connect();
 
 var app = express();
 
