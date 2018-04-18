@@ -20,10 +20,10 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var member = require('./routes/member');
 
-/*var connection = require('./config/db');
-connection.connect();*/
-var connection = require('./config/pgdb');
+var connection = require('./config/db');
 connection.connect();
+/*var connection = require('./config/pgdb');
+connection.connect();*/
 
 var app = express();
 
@@ -247,8 +247,8 @@ var transporter = nodemailer.createTransport({
     port: 465,  // 465
     secure: true, // true for 465, false for other ports
     auth: {
-        user: 'kuongee@gmail.com',  // kuongee
-        pass: 'min16032102'                    // daum 메일 접속 시 비밀번호
+        user: '',  // kuongee
+        pass: ''                    // daum 메일 접속 시 비밀번호
     }
 });
 
