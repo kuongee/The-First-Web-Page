@@ -5,16 +5,17 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+var fs = require('fs');
 var multer = require('multer');
 var _storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/')
+        cb(null, './public/uploads/')
     },
     filename: function (req, file, cb) {
-        cb(null, file.originalname)
+        cb(null,  Date.now() + '-' + file.originalname)
     }
-})
-var upload = multer({ storage: _storage })
+});
+var upload = multer({ storage: _storage });
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -25,10 +26,6 @@ connection.connect();
 
 var app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
@@ -36,51 +33,22 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(__dirname + '/uploads'));
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 
 //app.use('/member', member);
 
-function showImages(results) {
-    var htmlStart = `
-    <!doctype html>
-    <html>
-    <head>
-    <style>
-        .thumbnail{
-            margin: 10px;
-            width: 150px;
-            height: 150px;
-            background-size: cover;
-        }
-        .thumbnail.circle {
-            border-radius: 100%
-        }
-    </style>
-    </head>
-
-    <body>`;
-
-    var divText = `<div class="thumbnail circle" style="background-image:url('uploads/`;
-    var divEnd = `')"> </div>`;
-    results.forEach(element => {
-        htmlStart += divText + element.path + divEnd;
-    });
-
-    var htmlEnd = `</body>    </html>`;
-
-    return htmlStart + htmlEnd;
-}
 app.get('/', defaultPage);
 function defaultPage(req, res) {
     res.sendFile(__dirname + '/public/index.html');
 }
 
-app.post('/upload.json', function(req, res) {
+app.post('/upload', upload.single('userfile'), function(req, res) {
     var message = {};
-    var path = req.body.path.split("\\");
-    var name = path[path.length-1];
-    //console.log("Image name ", name);
-    message.path = name;
+    console.log("Image name " + req.file.filename);
+    message.path = req.file.filename;
     save(message, "image", res); 
 });
 
@@ -93,7 +61,7 @@ app.get('/show.json', function(req, res) {
 app.get('/delete.json', function(req, res) {
     var id = req.query.id;
    // console.log("id is " , id);
-    deleteItem(id, "image", res);
+    deleteDB(id, "image", res);
 });
 
 app.get('/list.json', function(req, res) {
@@ -130,7 +98,23 @@ function show(id, table, res) {
     });
 }
 
-function deleteItem(id, table, res) {
+function deleteItem(id, table) {
+    var selec = 'SELECT path from ' + table + ' where id = ';
+    connection.query(selec + connection.escape(id), function(err, result) {
+        var fullpath = path.join(__dirname, 'public', 'uploads', result[0].path);
+        fs.unlink(fullpath, function(error) {
+            if(error) {
+                throw error;
+            }
+            console.log("local file deleted successfully");
+            return;
+        });
+    });
+
+}
+
+function deleteDB(id, table, res) {
+    deleteItem(id, table);
     var sql = 'delete from ' + table + ' where id=';
     var query = connection.query(sql + connection.escape(id), function (err, result) {
         var resultObj = {};
@@ -139,10 +123,12 @@ function deleteItem(id, table, res) {
         }
         else {
             resultObj.success = true;
-            return;
+            //return;
         }
+        console.log("here");
         res.send(JSON.stringify(resultObj));        
     });
+
 }
 
 function list(pageNo, res) {
@@ -245,8 +231,8 @@ var transporter = nodemailer.createTransport({
     port: 465,  // 465
     secure: true, // true for 465, false for other ports
     auth: {
-        user: 'kuongee@gmail.com',  // kuongee
-        pass: 'min16032102'                    // daum 메일 접속 시 비밀번호
+        user: '',  
+        pass: ''     
     }
 });
 

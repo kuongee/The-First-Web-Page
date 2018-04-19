@@ -1,20 +1,22 @@
 $(init);
 function init() {
-    $("#upload").on('click', function () {
-        var len = $("#userfile")[0].files.length;
+    $('#imgform').submit(function () {
+        var len = $("#userfile").val().length;
         if (len > 0) {
-            var settings = {
-                method: 'post',
+            $(this).ajaxSubmit({
                 dataType: 'json',
-                data: { 'path': $("#userfile").val() }
-            };
-            $.ajax('/upload.json', settings)
-                .done(function (data) {
-                    if (data.success) {
-                        showImage(data.id);
+                error: function (xhr) {
+                    //status('Error: ' + xhr.status);
+                },
+                success: function (response) {
+                    console.log(response)
+                    if(response.success) {
+                        showImage(response.id);
                     }
-                });
+                }
+            });
         }
+        return false;
     });
 
     $("#showList").on('click', function () {
@@ -40,18 +42,18 @@ function list(pageNo) {
         });
 
         var deleteid = -1;
-        $(".dtdt").on('click', function() {
-            if(deleteid == -1) {
+        $(".dtdt").on('click', function () {
+            if (deleteid == -1) {
                 deleteid = $(this).text();
             }
 
-            if(deleteid != $(this).text()) {
+            if (deleteid != $(this).text()) {
                 deleteid = $(this).text();
             }
 
             //$(this).next().text("Delete " + deleteid + "?");
             var ret = confirm("Will you delete " + deleteid + "?");
-            if(ret == true) {
+            if (ret == true) {
                 deleteItem(deleteid, pageNo);
             }
 
@@ -117,7 +119,7 @@ function deleteItem(id, pageNo) {
         cache: false,
         data: {
             id: id
-        }
+        },
     }).done(function (res) {
         alert("Success to delete");
         list(1);
