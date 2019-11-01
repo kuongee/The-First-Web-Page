@@ -1,9 +1,13 @@
 # okweb
 
-This is example of web application.
+This project helps experiencing basic web development processes.
 
-Studying web development processes.
+Technical Help : Kenu heo
+
+# What technology used
 
 Node.js + javascript + MariaDB
 
-This study is led by kenuheo.
+# Detail Description (Korean)
+
+https://kuongee.gitbook.io/workspace/interests/2018-04-20-web_imageupload/
